@@ -1,0 +1,28 @@
+name: reelmate
+description: "A new Flutter project."
+
+publish_to: 'none' 
+
+version: 1.0.0+1
+
+environment:
+  sdk: ^3.5.3
+
+dependencies:
+  flutter:
+    sdk: flutter
+  dio: ^5.4.0  # For downloading files
+  youtube_explode_dart: ^1.12.0  # For extracting YouTube video links
+  path_provider: ^2.1.2  # Updated version for saving files
+  permission_handler: ^11.3.1  # Updated version for requesting storage permissions
+  fluttertoast: ^8.2.4  # For displaying messages
+  cupertino_icons: ^1.0.8
+  http: ^0.13.5  # Added http for API calls
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^4.0.0
+
+flutter:
+  uses-material-design: true
