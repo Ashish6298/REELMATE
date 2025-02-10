@@ -57,7 +57,7 @@ class _VideoDownloaderState extends State<VideoDownloader> {
     });
 
     try {
-      final request = http.Request("POST", Uri.parse("https://30xqlkjm-5000.inc1.devtunnels.ms/download")); //change url according to device
+      final request = http.Request("POST", Uri.parse("https://30xqlkjm-5000.inc1.devtunnels.ms/download"));//change url according to device
       request.headers["Content-Type"] = "application/json";
       request.body = jsonEncode({"url": url});
 
@@ -86,7 +86,7 @@ class _VideoDownloaderState extends State<VideoDownloader> {
     String dirPath = await getDownloadDirectory();
     String filePath = "$dirPath/$filename.mp4";
 
-    final response = await http.get(Uri.parse("https://30xqlkjm-5000.inc1.devtunnels.ms/download-file?filename=$filename")); //change url according to device
+    final response = await http.get(Uri.parse("https://30xqlkjm-5000.inc1.devtunnels.ms/download-file?filename=$filename"));//change url according to device
     if (response.statusCode == 200) {
       File file = File(filePath);
       await file.writeAsBytes(response.bodyBytes);

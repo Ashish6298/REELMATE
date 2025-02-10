@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'dart:async';
 import 'instagram_page.dart';
 import 'youtube_page.dart';
+import 'about.dart';
 
 void main() {
   runApp(const MyApp());
@@ -13,13 +14,14 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Social Media Hub',
+      title: 'ReelMate',
       initialRoute: '/',
       routes: {
         '/': (context) => const SplashScreen(),
         '/home': (context) => const HomePage(),
         '/instagram': (context) => ReelsDownloader(),
         '/youtube': (context) => VideoDownloader(),
+        '/about': (context) => const AboutPage(),
       },
       theme: ThemeData(
         textTheme: const TextTheme(
@@ -109,17 +111,34 @@ class HomePage extends StatelessWidget {
             colors: [Colors.white, Colors.blueGrey],
           ),
         ),
-        child: Center(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Image.asset('assets/social.png', width: 180),
-              const SizedBox(height: 30),
-              _buildButton(context, 'Go to Instagram', Colors.purpleAccent, '/instagram'),
-              const SizedBox(height: 20),
-              _buildButton(context, 'Go to YouTube', Colors.redAccent, '/youtube'),
-            ],
-          ),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            const SizedBox(height: 30),
+            const Text(
+              "ReelMate",
+              style: TextStyle(
+                fontSize: 28,
+                fontWeight: FontWeight.bold,
+                color: Colors.black,
+              ),
+              textAlign: TextAlign.center,
+            ),
+            const SizedBox(height: 10),
+            Center(child: Image.asset('assets/social.png', width: 180)),
+            const SizedBox(height: 20),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                _buildButton(context, 'Instagram', Colors.purpleAccent, '/instagram'),
+                const SizedBox(width: 10),
+                _buildButton(context, 'YouTube', Colors.redAccent, '/youtube'),
+                const SizedBox(width: 10),
+                _buildButton(context, 'About', const Color.fromARGB(255, 98, 209, 246), '/about'),
+              ],
+            ),
+          ],
         ),
       ),
     );
@@ -128,7 +147,7 @@ class HomePage extends StatelessWidget {
   Widget _buildButton(BuildContext context, String text, Color color, String route) {
     return ElevatedButton(
       style: ElevatedButton.styleFrom(
-        padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 15),
+        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 15),
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(30)),
         backgroundColor: color,
         elevation: 5,
@@ -144,4 +163,3 @@ class HomePage extends StatelessWidget {
     );
   }
 }
-
