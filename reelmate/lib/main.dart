@@ -26,7 +26,8 @@ class _VideoDownloaderState extends State<VideoDownloader> {
   Future<void> requestPermissions() async {
     await Permission.storage.request();
   }
-    Future<String> getDownloadDirectory() async {
+
+  Future<String> getDownloadDirectory() async {
     Directory? directory;
     if (Platform.isAndroid) {
       directory = Directory('/storage/emulated/0/Download/ReelMate'); // Custom Folder
@@ -94,6 +95,7 @@ class _VideoDownloaderState extends State<VideoDownloader> {
         statusMessage = "Download complete: $filePath";
         isDownloading = false;
         progress = 1.0;
+        urlController.clear(); // **Clears the URL input field after completion**
       });
     } else {
       setState(() {
