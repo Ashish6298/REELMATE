@@ -36,7 +36,7 @@ class _VideoDownloaderState extends State<VideoDownloader> {
   Future<void> requestPermissions() async {
     if (Platform.isAndroid) {
       if (await Permission.storage.request().isDenied) {
-        setState(() => statusMessage = "Storage permission denied.");
+        setState(() => statusMessage = "");
         return;
       }
 
@@ -78,21 +78,28 @@ class _VideoDownloaderState extends State<VideoDownloader> {
 
     try {
       final response = await http.post(
-        Uri.parse("https://30xqlkjm-5000.inc1.devtunnels.ms/download"),
+        Uri.parse("http://10.0.2.2:5000/download"),
         headers: {"Content-Type": "application/json"},
         body: '{"url": "$url"}',
       );
 
       if (response.statusCode == 200) {
         String dirPath = await getDownloadDirectory();
-        String filePath = "$dirPath/downloaded_video.mp4";
 
+        // Extract filename from headers
+        String filename = "downloaded_video.mp4"; // Default
+        String? contentDisposition = response.headers['content-disposition'];
+        if (contentDisposition != null && contentDisposition.contains("filename=")) {
+          filename = contentDisposition.split("filename=")[1].replaceAll('"', '').trim();
+        }
+
+        String filePath = "$dirPath/$filename";
         File file = File(filePath);
         await file.writeAsBytes(response.bodyBytes);
 
         setState(() => statusMessage = "Download complete: $filePath");
       } else {
-        setState(() => statusMessage = "Failed to download");
+        setState(() => statusMessage = "Failed to download. Server error.");
       }
     } catch (e) {
       setState(() => statusMessage = "Error: $e");
@@ -141,7 +148,6 @@ class _VideoDownloaderState extends State<VideoDownloader> {
     );
   }
 }
-
 
 
 
