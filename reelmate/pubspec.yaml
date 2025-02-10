@@ -20,8 +20,10 @@ dependencies:
   http: ^0.13.5  # Added http for API calls
   flutter_launcher_icons: ^0.13.1  # Added for app icons
   url_launcher: ^6.1.14
+  
 
 dev_dependencies:
+  flutter_launcher_icons: ^0.13.1
   flutter_test:
     sdk: flutter
   flutter_lints: ^4.0.0
@@ -29,14 +31,13 @@ dev_dependencies:
 flutter:
   uses-material-design: true
 
+
   assets:
     - assets/social.png
     - assets/ashish.jpg  # Ensure this file exists and the path is correct.
     - assets/         # Include all files in the assets folder.
 
-# flutter_icons:
-#   android: true
-#   ios: true
-#   image_path: "assets/icon.png"  # Replace with your actual icon file
-#   adaptive_icon_background: "#ffffff"  # Background color for Android adaptive icons
-#   adaptive_icon_foreground: "assets/icon_foreground.png"
+flutter_icons:
+  android: true
+  ios: true
+  image_path: "assets/icon.png"  # Replace with your actual icon file

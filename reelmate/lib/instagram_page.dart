@@ -57,7 +57,7 @@ class _ReelsDownloaderState extends State<ReelsDownloader> {
     });
 
     try {
-      final request = http.Request("POST", Uri.parse("https://30xqlkjm-5000.inc1.devtunnels.ms/download-reel")); // Change URL
+      final request = http.Request("POST", Uri.parse("http://13.201.87.147/api/download-reel")); // Change URL
       request.headers["Content-Type"] = "application/json";
       request.body = jsonEncode({"url": url});
 
@@ -86,7 +86,7 @@ class _ReelsDownloaderState extends State<ReelsDownloader> {
     String dirPath = await getDownloadDirectory();
     String filePath = "$dirPath/$filename.mp4";
 
-    final response = await http.get(Uri.parse("https://30xqlkjm-5000.inc1.devtunnels.ms/download-file?filename=$filename")); // Change URL
+    final response = await http.get(Uri.parse("http://13.201.87.147/api/download-file?filename=$filename")); // Change URL
     if (response.statusCode == 200) {
       File file = File(filePath);
       await file.writeAsBytes(response.bodyBytes);
