@@ -18,7 +18,7 @@ class MyApp extends StatelessWidget {
       routes: {
         '/': (context) => const SplashScreen(),
         '/home': (context) => const HomePage(),
-        '/instagram': (context) => InstagramPage(),
+        '/instagram': (context) => ReelsDownloader(),
         '/youtube': (context) => VideoDownloader(),
       },
       theme: ThemeData(
