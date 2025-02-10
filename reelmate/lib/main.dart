@@ -1,142 +1,147 @@
-import 'dart:convert';
-import 'dart:io';
 import 'package:flutter/material.dart';
-import 'package:http/http.dart' as http;
-import 'package:path_provider/path_provider.dart';
-import 'package:permission_handler/permission_handler.dart';
+import 'dart:async';
+import 'instagram_page.dart';
+import 'youtube_page.dart';
 
 void main() {
-  runApp(MaterialApp(
-    home: VideoDownloader(),
-    debugShowCheckedModeBanner: false,
-  ));
+  runApp(const MyApp());
 }
 
-class VideoDownloader extends StatefulWidget {
-  @override
-  _VideoDownloaderState createState() => _VideoDownloaderState();
-}
-
-class _VideoDownloaderState extends State<VideoDownloader> {
-  TextEditingController urlController = TextEditingController();
-  double progress = 0.0;
-  bool isDownloading = false;
-  String statusMessage = "Enter a YouTube URL to download";
-
-  Future<void> requestPermissions() async {
-    await Permission.storage.request();
-  }
-
-  Future<String> getDownloadDirectory() async {
-    Directory? directory;
-    if (Platform.isAndroid) {
-      directory = Directory('/storage/emulated/0/Download/ReelMate'); // Custom Folder
-    } else {
-      directory = await getApplicationDocumentsDirectory();
-    }
-
-    if (!(await directory.exists())) {
-      await directory.create(recursive: true);
-    }
-
-    return directory.path;
-  }
-
-  Future<void> downloadVideo() async {
-    String url = urlController.text.trim();
-    if (url.isEmpty) {
-      setState(() => statusMessage = "Please enter a valid URL");
-      return;
-    }
-
-    await requestPermissions();
-    setState(() {
-      isDownloading = true;
-      progress = 0.0;
-      statusMessage = "Downloading...";
-    });
-
-    try {
-      final request = http.Request("POST", Uri.parse("http://10.0.2.2:5000/download"));
-      request.headers["Content-Type"] = "application/json";
-      request.body = jsonEncode({"url": url});
-
-      final response = await http.Client().send(request);
-      response.stream.transform(utf8.decoder).listen((data) {
-        final parsed = jsonDecode(data.replaceFirst("data: ", "").trim());
-
-        if (parsed["progress"] != null) {
-          setState(() => progress = parsed["progress"] / 100.0);
-        }
-
-        if (parsed["status"] == "completed") {
-          String filename = parsed["filename"];
-          _downloadFile(filename);
-        }
-      });
-    } catch (e) {
-      setState(() {
-        isDownloading = false;
-        statusMessage = "Error: $e";
-      });
-    }
-  }
-
-  Future<void> _downloadFile(String filename) async {
-    String dirPath = await getDownloadDirectory();
-    String filePath = "$dirPath/$filename.mp4";
-
-    final response = await http.get(Uri.parse("http://10.0.2.2:5000/download-file?filename=$filename"));
-    if (response.statusCode == 200) {
-      File file = File(filePath);
-      await file.writeAsBytes(response.bodyBytes);
-
-      setState(() {
-        statusMessage = "Download complete: $filePath";
-        isDownloading = false;
-        progress = 1.0;
-        urlController.clear(); // **Clears the URL input field after completion**
-      });
-    } else {
-      setState(() {
-        statusMessage = "Download failed.";
-        isDownloading = false;
-      });
-    }
-  }
+class MyApp extends StatelessWidget {
+  const MyApp({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: Text("YouTube Video Downloader")),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            TextField(
-              controller: urlController,
-              decoration: InputDecoration(
-                labelText: "YouTube Video URL",
-                border: OutlineInputBorder(),
-              ),
-            ),
-            SizedBox(height: 20),
-            ElevatedButton(
-              onPressed: isDownloading ? null : downloadVideo,
-              child: Text(isDownloading ? "Downloading..." : "Download Video"),
-            ),
-            SizedBox(height: 20),
-            LinearProgressIndicator(
-              value: isDownloading ? progress : 0.0,
-              backgroundColor: Colors.grey[300],
-              valueColor: AlwaysStoppedAnimation<Color>(Colors.blue),
-            ),
-            SizedBox(height: 20),
-            Text(statusMessage, style: TextStyle(fontSize: 16)),
-          ],
+    return MaterialApp(
+      title: 'Social Media Hub',
+      initialRoute: '/',
+      routes: {
+        '/': (context) => const SplashScreen(),
+        '/home': (context) => const HomePage(),
+        '/instagram': (context) => InstagramPage(),
+        '/youtube': (context) => VideoDownloader(),
+      },
+      theme: ThemeData(
+        textTheme: const TextTheme(
+          bodyMedium: TextStyle(fontSize: 16, color: Colors.black),
         ),
       ),
     );
   }
 }
+
+class SplashScreen extends StatefulWidget {
+  const SplashScreen({super.key});
+
+  @override
+  _SplashScreenState createState() => _SplashScreenState();
+}
+
+class _SplashScreenState extends State<SplashScreen>
+    with SingleTickerProviderStateMixin {
+  late AnimationController _controller;
+  late Animation<double> _opacityAnimation;
+  late Animation<double> _scaleAnimation;
+
+  @override
+  void initState() {
+    super.initState();
+
+    _controller = AnimationController(
+      vsync: this,
+      duration: const Duration(seconds: 3),
+    );
+
+    _opacityAnimation = Tween<double>(begin: 0, end: 1).animate(
+      CurvedAnimation(parent: _controller, curve: Curves.easeIn),
+    );
+
+    _scaleAnimation = Tween<double>(begin: 0.5, end: 1.0).animate(
+      CurvedAnimation(parent: _controller, curve: Curves.elasticOut),
+    );
+
+    _controller.forward();
+
+    Timer(const Duration(seconds: 3), () {
+      Navigator.of(context).pushReplacementNamed('/home');
+    });
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: Colors.white,
+      body: Center(
+        child: AnimatedBuilder(
+          animation: _controller,
+          builder: (context, child) {
+            return Opacity(
+              opacity: _opacityAnimation.value,
+              child: Transform.scale(
+                scale: _scaleAnimation.value,
+                child: Image.asset('assets/social.png', width: 200),
+              ),
+            );
+          },
+        ),
+      ),
+    );
+  }
+}
+
+class HomePage extends StatelessWidget {
+  const HomePage({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: Container(
+        decoration: const BoxDecoration(
+          gradient: LinearGradient(
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+            colors: [Colors.white, Colors.blueGrey],
+          ),
+        ),
+        child: Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Image.asset('assets/social.png', width: 180),
+              const SizedBox(height: 30),
+              _buildButton(context, 'Go to Instagram', Colors.purpleAccent, '/instagram'),
+              const SizedBox(height: 20),
+              _buildButton(context, 'Go to YouTube', Colors.redAccent, '/youtube'),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildButton(BuildContext context, String text, Color color, String route) {
+    return ElevatedButton(
+      style: ElevatedButton.styleFrom(
+        padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 15),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(30)),
+        backgroundColor: color,
+        elevation: 5,
+        shadowColor: Colors.black26,
+      ),
+      onPressed: () {
+        Navigator.of(context).pushNamed(route);
+      },
+      child: Text(
+        text,
+        style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.white),
+      ),
+    );
+  }
+}
+
