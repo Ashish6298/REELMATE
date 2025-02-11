@@ -53,3 +53,9 @@ To download the latest version of **ReelMate**, visit the **[Releases](https://g
    ```bash
    git clone https://github.com/Ashish6298/REELMATE.git
    cd REELMATE
+2. Install dependencies:
+   ```bash
+   flutter pub get
+3. Run the app
+   ```bash
+   flutter run
