@@ -3,6 +3,8 @@ import 'dart:async';
 import 'instagram_page.dart';
 import 'youtube_page.dart';
 import 'about.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+
 
 void main() {
   runApp(const MyApp());
@@ -101,48 +103,120 @@ class HomePage extends StatelessWidget {
   const HomePage({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      body: Container(
-        decoration: const BoxDecoration(
-          gradient: LinearGradient(
-            begin: Alignment.topCenter,
-            end: Alignment.bottomCenter,
-            colors: [Colors.white, Colors.blueGrey],
-          ),
-        ),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            const SizedBox(height: 30),
-            const Text(
-              "ReelMate",
-              style: TextStyle(
-                fontSize: 28,
-                fontWeight: FontWeight.bold,
-                color: Colors.black,
-              ),
-              textAlign: TextAlign.center,
-            ),
-            const SizedBox(height: 10),
-            Center(child: Image.asset('assets/social.png', width: 180)),
-            const SizedBox(height: 20),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                _buildButton(context, 'Instagram', Colors.purpleAccent, '/instagram'),
-                const SizedBox(width: 10),
-                _buildButton(context, 'YouTube', Colors.redAccent, '/youtube'),
-                const SizedBox(width: 10),
-                _buildButton(context, 'About', const Color.fromARGB(255, 98, 209, 246), '/about'),
-              ],
-            ),
-          ],
+
+
+Widget build(BuildContext context) {
+  return Scaffold(
+    body: Container(
+      decoration: const BoxDecoration(
+        gradient: LinearGradient(
+          begin: Alignment.topCenter,
+          end: Alignment.bottomCenter,
+          colors: [Colors.white, Colors.blueGrey],
         ),
       ),
-    );
-  }
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          const SizedBox(height: 30),
+          TweenAnimationBuilder(
+            tween: Tween<double>(begin: 0.0, end: 1.0),
+            duration: Duration(seconds: 2),
+            builder: (context, double value, child) {
+              return Opacity(
+                opacity: value,
+                child: Transform(
+                  transform: Matrix4.identity()
+                    ..scale(0.8 + (value * 0.2))
+                    ..translate(0.0, (1 - value) * -20), // Smooth vertical movement
+                  child: const Text(
+                    "ReelMate",
+                    style: TextStyle(
+                      fontSize: 36,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.black,
+                      fontFamily: 'DancingScript', // Latin/cursive font style
+                      shadows: [
+                        Shadow(
+                          blurRadius: 5.0,
+                          color: Colors.blueGrey,
+                          offset: Offset(2.0, 2.0),
+                        ),
+                      ],
+                    ),
+                    textAlign: TextAlign.center,
+                  ),
+                ),
+              );
+            },
+          ),
+          const SizedBox(height: 10),
+          Center(child: Image.asset('assets/social.png', width: 180)),
+          const SizedBox(height: 20),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Column(
+                children: [
+                  Container(
+                    decoration: BoxDecoration(
+                      color: Colors.black,
+                      shape: BoxShape.circle,
+                    ),
+                    padding: EdgeInsets.all(5),
+                    child: IconButton(
+                      icon: FaIcon(FontAwesomeIcons.instagram, color: Colors.white, size: 30),
+                      onPressed: () => Navigator.pushNamed(context, '/instagram'),
+                    ),
+                  ),
+                  const SizedBox(height: 5),
+                ],
+              ),
+              const SizedBox(width: 20),
+              Column(
+                children: [
+                  Container(
+                    decoration: BoxDecoration(
+                      color: Colors.black,
+                      shape: BoxShape.circle,
+                    ),
+                    padding: EdgeInsets.all(5),
+                    child: IconButton(
+                      icon: FaIcon(FontAwesomeIcons.youtube, color: Colors.white, size: 30),
+                      onPressed: () => Navigator.pushNamed(context, '/youtube'),
+                    ),
+                  ),
+                  const SizedBox(height: 5),
+                ],
+              ),
+              const SizedBox(width: 20),
+              Column(
+                children: [
+                  Container(
+                    decoration: BoxDecoration(
+                      color: Colors.black,
+                      shape: BoxShape.circle,
+                    ),
+                    padding: EdgeInsets.all(5),
+                    child: IconButton(
+                      icon: FaIcon(FontAwesomeIcons.infoCircle, color: Colors.white, size: 30),
+                      onPressed: () => Navigator.pushNamed(context, '/about'),
+                    ),
+                  ),
+                  const SizedBox(height: 5),
+                ],
+              ),
+            ],
+          ),
+        ],
+      ),
+    ),
+  );
+}
+
+
+
 
   Widget _buildButton(BuildContext context, String text, Color color, String route) {
     return ElevatedButton(
@@ -163,3 +237,4 @@ class HomePage extends StatelessWidget {
     );
   }
 }
+
