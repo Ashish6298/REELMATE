@@ -26,8 +26,6 @@ To download the latest version of **ReelMate**, visit the **[Releases](https://g
 
 ---
 
-## **📸 Screenshots**  
-*(Add images showing the app interface and download process if available.)*  
 
 ---
 
