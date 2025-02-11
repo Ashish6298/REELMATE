@@ -1,4 +1,4 @@
-# ![ReelMate Logo]([https://imgur.com/a/f6rmkZD])  
+# ![ReelMate Logo](https://i.imgur.com/yourimagename.png)
 # **ReelMate - Download Instagram Reels & YouTube Videos** 🎬🚀  
 
 [![GitHub release](https://img.shields.io/github/v/release/Ashish6298/REELMATE)](https://github.com/Ashish6298/REELMATE/releases/tag/v1.0.0)
